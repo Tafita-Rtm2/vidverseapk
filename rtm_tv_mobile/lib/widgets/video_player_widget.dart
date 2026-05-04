@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Nécessaire pour DeviceOrientation
 import 'package:google_fonts/google_fonts.dart';
 import 'package:better_player_plus/better_player_plus.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -35,7 +36,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   @override
   void didUpdateWidget(VideoPlayerWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Si on change de chaîne → on recharge le player
     if (oldWidget.channel.id != widget.channel.id) {
       _disposePlayer();
       _initializePlayer();
@@ -57,8 +57,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
     final streamUrl = _apiService.getStreamUrl(widget.channel.id);
 
-    // ✅ Headers envoyés avec chaque requête HLS (manifest + segments)
-    // Le serveur détecte X-RTM-Client: flutter → retourne URLs absolues
     final headers = {
       'x-rtm-auth': ApiService.authKey,
       'X-RTM-Client': 'flutter',
@@ -68,27 +66,21 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       'Connection': 'keep-alive',
     };
 
-    // ✅ Source HLS avec headers
     final dataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       streamUrl,
       headers: headers,
       liveStream: true,
-      // Notifie better_player que c'est du HLS
       videoFormat: BetterPlayerVideoFormat.hls,
-      // Cache désactivé pour le live
       cacheConfiguration: const BetterPlayerCacheConfiguration(
         useCache: false,
       ),
-      // Notifications désactivées
       notificationConfiguration: const BetterPlayerNotificationConfiguration(
         showNotification: false,
       ),
     );
 
-
-// ✅ 1. Configuration globale (Ligne 90 environ)
-    // On retire le "const" ici car la configuration contient des éléments dynamiques
+    // ✅ Configuration unique et propre
     final BetterPlayerConfiguration playerConfig = BetterPlayerConfiguration(
       autoPlay: true,
       looping: false,
@@ -96,30 +88,16 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       fit: BoxFit.contain,
       handleLifecycle: true,
       autoDispose: true,
-      // Placeholder, contrôles, etc. (garde ton code existant ici)
-    );
-
-    // ✅ 2. Initialisation du contrôleur (Ligne 124)
-    // On enlève le "const" devant BetterPlayerConfiguration pour corriger l'erreur de compilation
-    _betterPlayerController = BetterPlayerController(
-      BetterPlayerConfiguration(
-        aspectRatio: 16 / 9,
-        fit: BoxFit.contain,
-        autoPlay: true,
-        looping: false,
-        deviceOrientationsAfterFullScreen: [
-          DeviceOrientation.portraitUp,
-        ],
-      ),
-      betterPlayerDataSource: dataSource,
-    );
+      deviceOrientationsAfterFullScreen: [
+        DeviceOrientation.portraitUp,
+      ],
       // ✅ Contrôles personnalisés
       controlsConfiguration: BetterPlayerControlsConfiguration(
         enableFullscreen: true,
         enablePlayPause: true,
         enableSkips: false,
         enableMute: true,
-        enableProgressBar: false, // Pas de progress bar sur le live
+        enableProgressBar: false,
         liveTextColor: AppColors.accent,
         progressBarPlayedColor: AppColors.accent,
         progressBarHandleColor: AppColors.accent,
@@ -129,31 +107,14 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         showControlsOnInitialize: false,
         enableOverflowMenu: false,
       ),
-
-   // ✅ Buffering optimisé par défaut pour IPTV
-    _betterPlayerController = BetterPlayerController(
-      const BetterPlayerConfiguration(
-        aspectRatio: 16 / 9,
-        fit: BoxFit.contain,
-        autoPlay: true,
-        looping: false,
-        deviceOrientationsAfterFullScreen: [
-          DeviceOrientation.portraitUp,
-        ],
-      ),
-      betterPlayerDataSource: dataSource,
-    );
-
-      // Callback erreur
       errorBuilder: (context, errorMessage) {
         return _buildErrorWidget();
       },
     );
 
     try {
-      final controller = BetterPlayerController(betterPlayerConfiguration);
+      final controller = BetterPlayerController(playerConfig);
 
-      // ✅ Écouter les events du player
       controller.addEventsListener((event) {
         if (!mounted) return;
         if (event.betterPlayerEventType == BetterPlayerEventType.initialized) {
@@ -205,8 +166,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       color: Colors.black,
       child: Stack(
         children: [
-
-          // ── Player ──
           if (_betterPlayerController != null && !_hasError)
             BetterPlayer(controller: _betterPlayerController!)
           else if (_hasError)
@@ -215,16 +174,11 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             const Center(
               child: CircularProgressIndicator(color: AppColors.accent),
             ),
-
-          // ── Overlay info chaîne (haut) ──
           _buildOverlay(),
-
-          // ── Indicateur buffering ──
           if (_isLoading && !_hasError && _betterPlayerController != null)
             const Center(
               child: CircularProgressIndicator(color: AppColors.accent),
             ),
-
         ],
       ),
     );
@@ -272,7 +226,9 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   Widget _buildOverlay() {
     return Positioned(
-      top: 0, left: 0, right: 0,
+      top: 0,
+      left: 0,
+      right: 0,
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
@@ -318,7 +274,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                 ],
               ),
             ),
-            // Badge LIVE
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
