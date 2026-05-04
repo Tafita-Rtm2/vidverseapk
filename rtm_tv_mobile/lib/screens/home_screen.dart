@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ApiService _apiService = ApiService();
+  final ScrollController _scrollController = ScrollController(); // Pour contrôler le scroll
   List<Channel> _allChannels = [];
   List<Channel> _filteredChannels = [];
   bool _isLoading = true;
@@ -28,6 +29,12 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -56,13 +63,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
         bool matchesFilter = true;
         if (_currentFilter != 'all') {
-           if (_currentFilter.startsWith('country:')) {
-             matchesFilter = ch.country == _currentFilter.split(':')[1];
-           } else {
-             matchesFilter = (ch.group ?? '').toLowerCase().contains(_currentFilter.toLowerCase());
-           }
+          if (_currentFilter.startsWith('country:')) {
+            matchesFilter = ch.country == _currentFilter.split(':')[1];
+          } else {
+            matchesFilter = (ch.group ?? '').toLowerCase().contains(_currentFilter.toLowerCase());
+          }
         }
-
         return matchesSearch && matchesFilter;
       }).toList();
     });
@@ -84,7 +90,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         title: Row(
           children: [
-            Image.asset('assets/logo.png', width: 36, height: 36, errorBuilder: (c, e, s) => const Icon(Icons.tv, color: AppColors.accent)),
+            Image.asset('assets/logo.png', 
+              width: 36, 
+              height: 36, 
+              errorBuilder: (c, e, s) => const Icon(Icons.tv, color: AppColors.accent)
+            ),
             const SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,37 +118,56 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      // --- STRUCTURE MODIFIÉE ICI ---
       body: Column(
         children: [
-          _buildSearchBar(),
+          // 1. ZONE FIXE : Vidéo ou Barre de recherche
+          if (_selectedChannel != null)
+            VideoPlayerWidget(
+              channel: _selectedChannel!,
+              onClose: () => setState(() => _selectedChannel = null),
+            )
+          else
+            _buildSearchBar(),
+
+          // 2. ZONE DE DÉFILEMENT : Liste des chaînes
           Expanded(
             child: _isLoading
-              ? _buildShimmerGrid()
-              : CustomScrollView(
-                  slivers: [
-                    if (_selectedChannel == null)
-                      SliverToBoxAdapter(
-                        child: HeroCarousel(onPlay: (idx) {
-                          // Pour la démo, on prend la première chaîne du groupe Sport par exemple
-                          final ch = _allChannels.firstWhere((c) => (c.group ?? '').toLowerCase().contains('sport'), orElse: () => _allChannels.first);
-                          setState(() => _selectedChannel = ch);
-                        }),
-                      )
-                    else
-                      SliverToBoxAdapter(
-                        child: VideoPlayerWidget(
-                          channel: _selectedChannel!,
-                          onClose: () => setState(() => _selectedChannel = null),
+                ? _buildShimmerGrid()
+                : CustomScrollView(
+                    controller: _scrollController,
+                    slivers: [
+                      // Carrousel uniquement si aucune vidéo n'est lancée
+                      if (_selectedChannel == null)
+                        SliverToBoxAdapter(
+                          child: HeroCarousel(onPlay: (idx) {
+                            final ch = _allChannels.firstWhere(
+                              (c) => (c.group ?? '').toLowerCase().contains('sport'), 
+                              orElse: () => _allChannels.first
+                            );
+                            _playChannel(ch);
+                          }),
                         ),
-                      ),
-                    _buildCategoryPills(),
-                    _buildGridHeader(),
-                    _buildChannelGrid(),
-                  ],
-                ),
+                      
+                      _buildCategoryPills(),
+                      _buildGridHeader(),
+                      _buildChannelGrid(),
+                    ],
+                  ),
           ),
         ],
       ),
+    );
+  }
+
+  // Fonction pour lancer une chaîne et remonter la liste
+  void _playChannel(Channel ch) {
+    setState(() => _selectedChannel = ch);
+    // On remonte le scroll au début pour bien voir le player
+    _scrollController.animateTo(
+      0, 
+      duration: const Duration(milliseconds: 300), 
+      curve: Curves.easeOut
     );
   }
 
@@ -268,10 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return ChannelCard(
               channel: ch,
               isNowPlaying: _selectedChannel?.id == ch.id,
-              onTap: () {
-                setState(() => _selectedChannel = ch);
-                // Logique pour lancer le player
-              },
+              onTap: () => _playChannel(ch),
             );
           },
           childCount: _filteredChannels.length,
