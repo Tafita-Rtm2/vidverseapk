@@ -10,8 +10,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   http: ^1.1.0
+
+  # ✅ Lecteur vidéo compatible Flutter 3.x
   better_player_plus: ^1.2.1
+
   cached_network_image: ^3.3.0
   carousel_slider: ^5.0.0
   flutter_blurhash: ^0.8.2
@@ -24,17 +28,20 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+  
+  # ✅ Outil pour générer les icônes
   flutter_launcher_icons: ^0.13.1
 
-# Configuration des icônes
+# Configuration du générateur d'icônes
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/logo.png"
-  adaptive_icon_background: "#000000"
+  # Configuration Adaptive Icon pour Android (évite le flou)
+  adaptive_icon_background: "#000000" 
   adaptive_icon_foreground: "assets/logo.png"
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/logo.png # ✅ Vérifie que ce chemin est EXACTEMENT le même que ton fichier
+    - assets/logo.png
