@@ -120,21 +120,19 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         enableOverflowMenu: false,
       ),
 
-      // ✅ Buffering optimisé pour IPTV live
-      _betterPlayerController = BetterPlayerController(
-  BetterPlayerConfiguration(
-    aspectRatio: 16 / 9,
-    fit: BoxFit.contain,
-    autoPlay: true,
-    looping: false,
-    // ✅ On a supprimé la partie 'bufferingConfiguration' qui bloquait le build
-    deviceOrientationsAfterFullScreen: [
-      DeviceOrientation.portraitUp,
-    ],
-    // Garde le reste de tes options ici (contrôles, etc.)
-  ),
-  betterPlayerDataSource: dataSource,
-);
+   // ✅ Buffering optimisé par défaut pour IPTV
+    _betterPlayerController = BetterPlayerController(
+      const BetterPlayerConfiguration(
+        aspectRatio: 16 / 9,
+        fit: BoxFit.contain,
+        autoPlay: true,
+        looping: false,
+        deviceOrientationsAfterFullScreen: [
+          DeviceOrientation.portraitUp,
+        ],
+      ),
+      betterPlayerDataSource: dataSource,
+    );
 
       // Callback erreur
       errorBuilder: (context, errorMessage) {
