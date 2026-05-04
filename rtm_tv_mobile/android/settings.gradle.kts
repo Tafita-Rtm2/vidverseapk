@@ -19,8 +19,12 @@ pluginManagement {
 
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
+    // ✅ Garde bien cette version 8.6.0
     id("com.android.application") version "8.6.0" apply false
-    id("org.jetbrains.kotlin.android") version "2.1.0" apply false
+    // ✅ Version Kotlin compatible
+    id("org.jetbrains.kotlin.android") version "1.9.22" apply false 
+    // Note : J'ai mis 1.9.22 car c'est la plus stable avec Flutter actuellement, 
+    // mais 2.1.0 peut fonctionner si ton projet est très récent.
 }
 
 include(":app")
