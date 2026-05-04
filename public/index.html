@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>RTM+ LIVE • Streaming Ultra Premium</title>
+<link rel="icon" href="https://iili.io/Br3av6u.png">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12"></script>
+<style>
+
+/* ══════════════════════════════════════════════
+   AD BLOCKER
+══════════════════════════════════════════════ */
+iframe[src*="ads"],iframe[src*="doubleclick"],iframe[src*="googlesyndication"],
+iframe[src*="adnxs"],iframe[src*="cdn4ads"],iframe[src*="taboola"],
+iframe[src*="outbrain"],iframe[src*="mgid"],iframe[src*="revcontent"],
+iframe[src*="popads"],iframe[src*="popcash"],iframe[src*="propeller"],
+iframe[src*="adcash"],iframe[src*="clickadu"],iframe[src*="exoclick"],
+div[class*="ad-"],div[id*="ad-"],div[class*="banner"],div[class*="popup"],
+a[href*="doubleclick"],a[href*="cdn4ads"],a[href*="popads"],[data-ad],
+.adsbygoogle,ins.adsbygoogle,.ad-container,.pub-container,.advertisement,
+div[style*="z-index: 9999"]:not(.modal):not(#toasts),
+div[style*="z-index:9999"]:not(.modal):not(#toasts),
+div[style*="position: fixed"][style*="top: 0"]:not(nav):not(header),
+div[style*="position:fixed"][style*="top:0"]:not(nav):not(header){
+  display:none!important;visibility:hidden!important;
+  pointer-events:none!important;opacity:0!important;
+  width:0!important;height:0!important;
+}
+
+/* ══════════════════════════════════════════════
+   DESIGN TOKENS — Ultra Dark Cinema
+══════════════════════════════════════════════ */
+:root{
+  --bg:   #05070f;
+  --bg2:  #080c18;
+  --sf:   #0c1124;
+  --s2:   #10192e;
+  --s3:   #172240;
+  --b1:   rgba(255,255,255,.06);
+  --b2:   rgba(255,255,255,.1);
+  --b3:   rgba(255,255,255,.16);
+  --ac:   #e8a020;
+  --a2:   #f0c060;
+  --a3:   #c07010;
+  --bl:   #1a6fff;
+  --b4:   #4090ff;
+  --gr:   #22d3a4;
+  --rd:   #ff4d5e;
+  --tx:   #eef0f8;
+  --t2:   #7a8aaa;
+  --t3:   #3a4560;
+  --fn:   'Syne',sans-serif;
+  --fb:   'DM Sans',sans-serif;
+  --r:    14px;
+  --rs:   10px;
+  --tr:   .15s ease;
+  --nav:  58px;
+  --sb:   210px;
+  --gold: linear-gradient(135deg,#e8a020,#f5d060,#c07010);
+  --glow: 0 0 40px rgba(232,160,32,.15);
+}
+
+/* ══ RESET ══ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:var(--fb);background:var(--bg);color:var(--tx);
+  display:flex;flex-direction:column;
+  -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;
+}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+input{font:inherit;color:inherit}
+a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:2px;height:2px}
+::-webkit-scrollbar-thumb{background:rgba(232,160,32,.3);border-radius:2px}
+::-webkit-scrollbar-track{background:transparent}
+
+.mi{
+  font-family:'Material Symbols Rounded';font-style:normal;
+  font-size:20px;line-height:1;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;
+}
+
+/* ══════════════════════════════════════════════
+   NAV / TOPBAR — Cinema Luxury
+══════════════════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav);z-index:200;
+  background:rgba(5,7,15,.92);
+  backdrop-filter:blur(20px) saturate(1.6);
+  -webkit-backdrop-filter:blur(20px) saturate(1.6);
+  border-bottom:1px solid rgba(232,160,32,.15);
+  display:flex;align-items:center;padding:0 18px;gap:12px;
+}
+nav::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 0%,rgba(232,160,32,.5) 30%,rgba(245,208,96,.8) 50%,rgba(232,160,32,.5) 70%,transparent 100%);
+}
+nav::before{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:60px;top:0;
+  background:linear-gradient(180deg,rgba(232,160,32,.04) 0%,transparent 100%);
+  pointer-events:none;
+}
+
+/* Logo */
+.logo{
+  flex-shrink:0;display:flex;align-items:center;gap:10px;
+  text-decoration:none;
+}
+.logo-img{
+  width:36px;height:36px;border-radius:9px;object-fit:contain;
+  box-shadow:0 0 20px rgba(232,160,32,.35),0 2px 12px rgba(0,0,0,.6);
+  border:1px solid rgba(232,160,32,.3);
+}
+.logo-text{
+  font-family:var(--fn);font-size:1.1rem;font-weight:800;
+  letter-spacing:.04em;
+  background:var(--gold);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.logo-badge{
+  font-size:.48rem;font-weight:700;letter-spacing:.1em;
+  background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;opacity:.7;display:block;margin-top:-4px;
+}
+
+/* Bouton menu mobile */
+#menuToggle{
+  width:36px;height:36px;border-radius:var(--rs);
+  background:rgba(232,160,32,.08);border:1px solid rgba(232,160,32,.2);
+  display:none;align-items:center;justify-content:center;
+  flex-shrink:0;transition:var(--tr);
+}
+#menuToggle:hover{background:rgba(232,160,32,.18)}
+#menuToggle .mi{font-size:20px;color:var(--ac)}
+
+/* Search */
+.search{flex:1;max-width:380px;position:relative;min-width:0}
+.search input{
+  width:100%;background:rgba(255,255,255,.04);
+  border:1px solid rgba(232,160,32,.18);
+  border-radius:50px;padding:8px 40px 8px 16px;
+  font-size:.82rem;outline:none;color:var(--tx);transition:var(--tr);
+  font-family:var(--fb);
+}
+.search input:focus{
+  border-color:rgba(232,160,32,.55);background:rgba(232,160,32,.06);
+  box-shadow:0 0 0 3px rgba(232,160,32,.08),var(--glow);
+}
+.search input::placeholder{color:var(--t3)}
+.search .srch-icon{
+  position:absolute;right:13px;top:50%;transform:translateY(-50%);
+  color:var(--ac);font-size:16px;pointer-events:none;opacity:.7;
+}
+.search button{
+  position:absolute;right:5px;top:50%;transform:translateY(-50%);
+  width:28px;height:28px;border-radius:50%;
+  color:var(--t2);display:none;
+  align-items:center;justify-content:center;transition:var(--tr);
+}
+.search button:hover{background:var(--b1);color:var(--tx)}
+.search input:not(:placeholder-shown)~button{display:flex}
+.search input:not(:placeholder-shown)~.srch-icon{display:none}
+
+/* Accès rapides nav */
+.quick-access{
+  display:flex;gap:4px;align-items:center;
+}
+.qa-btn{
+  height:34px;padding:0 12px;
+  border-radius:8px;
+  font-size:.72rem;font-weight:600;font-family:var(--fn);
+  display:flex;align-items:center;gap:5px;transition:var(--tr);
+  white-space:nowrap;position:relative;overflow:hidden;
+  border:1px solid rgba(255,255,255,.07);
+  color:var(--t2);background:rgba(255,255,255,.03);
+}
+.qa-btn::before{
+  content:'';position:absolute;inset:0;
+  background:var(--gold);opacity:0;transition:.2s;
+}
+.qa-btn:hover{color:var(--ac);border-color:rgba(232,160,32,.3);background:rgba(232,160,32,.06)}
+.qa-btn.active,.qa-btn:active{color:#000;border-color:var(--ac)}
+.qa-btn.active::before{opacity:1}
+.qa-btn.active span{position:relative;z-index:1;color:#000}
+.qa-btn .mi{font-size:15px;position:relative;z-index:1}
+.qa-btn span{position:relative;z-index:1}
+
+/* Nav boutons droite */
+.nav-btns{display:flex;gap:6px;margin-left:auto;flex-shrink:0}
+.nav-btn{
+  height:34px;padding:0 14px;
+  background:rgba(232,160,32,.1);border:1px solid rgba(232,160,32,.3);
+  border-radius:8px;color:var(--a2);
+  font-size:.74rem;font-weight:700;font-family:var(--fn);
+  display:flex;align-items:center;gap:5px;transition:var(--tr);
+}
+.nav-btn:hover{background:rgba(232,160,32,.2);border-color:var(--ac);box-shadow:var(--glow)}
+.nav-btn .mi{font-size:16px}
+@media(max-width:600px){.nav-btn span:not(.mi){display:none}.nav-btn{padding:0 10px}}
+
+/* ══════════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════════ */
+.shell{
+  position:fixed;top:var(--nav);left:0;right:0;bottom:0;
+  display:flex;overflow:hidden;
+}
+
+/* ══════════════════════════════════════════════
+   SIDEBAR — Dark Luxury Panel
+══════════════════════════════════════════════ */
+.sidebar{
+  width:var(--sb);min-width:var(--sb);flex-shrink:0;
+  background:var(--bg2);
+  border-right:1px solid rgba(232,160,32,.1);
+  display:flex;flex-direction:column;overflow-y:auto;
+  padding:10px 6px 24px;gap:1px;
+  scrollbar-width:none;
+}
+.sidebar::-webkit-scrollbar{display:none}
+
+.slbl{
+  font-size:.55rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.14em;color:rgba(232,160,32,.45);padding:12px 10px 5px;
+  font-family:var(--fn);
+}
+.sdiv{height:1px;background:rgba(232,160,32,.08);margin:6px 8px}
+
+/* Sidebar nav items */
+.nb{
+  display:flex;align-items:center;gap:8px;padding:8px 11px;
+  border-radius:var(--rs);font-size:.79rem;font-weight:500;
+  color:var(--t2);width:100%;transition:var(--tr);text-align:left;
+  font-family:var(--fb);position:relative;overflow:hidden;
+}
+.nb:hover{background:rgba(232,160,32,.06);color:var(--tx)}
+.nb.active,
+.nb.on{
+  background:linear-gradient(90deg,rgba(232,160,32,.14),rgba(232,160,32,.03));
+  color:var(--ac);font-weight:600;
+  border-left:2px solid var(--ac);padding-left:9px;
+}
+.nb.active::after{
+  content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);
+  width:4px;height:4px;border-radius:50%;background:var(--ac);
+  box-shadow:0 0 8px var(--ac);
+}
+.nb .mi{font-size:17px;flex-shrink:0}
+.nb .cnt{
+  margin-left:auto;font-size:.56rem;
+  background:rgba(232,160,32,.12);color:var(--ac);
+  padding:2px 6px;border-radius:20px;font-weight:700;border:1px solid rgba(232,160,32,.2);
+}
+
+/* Pays selector */
+.csel{padding:3px 5px 6px}
+.cbox{
+  background:rgba(255,255,255,.03);border:1px solid rgba(232,160,32,.12);
+  border-radius:var(--rs);overflow:hidden;
+}
+.csrch{display:flex;align-items:center;gap:5px;padding:7px 10px;border-bottom:1px solid rgba(232,160,32,.08)}
+.csrch input{width:100%;background:none;border:none;outline:none;font-size:.77rem;color:var(--tx)}
+.csrch input::placeholder{color:var(--t3)}
+.csrch .mi{font-size:13px;color:rgba(232,160,32,.5);flex-shrink:0}
+.clist{max-height:180px;overflow-y:auto}
+.ci{display:flex;align-items:center;gap:6px;padding:6px 10px;font-size:.77rem;color:var(--t2);cursor:pointer;transition:var(--tr)}
+.ci:hover{background:rgba(232,160,32,.06);color:var(--tx)}
+.ci.on{background:rgba(232,160,32,.1);color:var(--ac);font-weight:600}
+
+/* Drawer overlay mobile */
+#sbOverlay{
+  display:none;position:fixed;inset:0;z-index:150;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(4px);
+}
+#sbOverlay.on{display:block}
+
+/* ══════════════════════════════════════════════
+   MAIN
+══════════════════════════════════════════════ */
+.main{
+  flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;
+}
+
+/* ══ HERO CAROUSEL — quand player inactif ══ */
+#heroCarousel{
+  flex-shrink:0;
+  height:min(38vh,280px);
+  position:relative;overflow:hidden;background:#000;
+  border-bottom:1px solid rgba(232,160,32,.12);
+}
+#heroCarousel.hidden{display:none}
+
+.hero-slide{
+  position:absolute;inset:0;opacity:0;transition:opacity .8s ease;
+  cursor:pointer;
+}
+.hero-slide.active{opacity:1}
+.hero-slide img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.55) saturate(1.2)}
+.hero-slide::after{
+  content:'';position:absolute;inset:0;
+  background:
+    linear-gradient(90deg,rgba(5,7,15,.85) 0%,transparent 50%),
+    linear-gradient(0deg,rgba(5,7,15,.9) 0%,transparent 50%);
+}
+.hero-info{
+  position:absolute;bottom:0;left:0;right:0;z-index:2;
+  padding:20px 22px 16px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+}
+.hero-meta{}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--ac);color:#000;
+  font-size:.62rem;font-weight:800;font-family:var(--fn);
+  padding:3px 8px;border-radius:4px;letter-spacing:.06em;margin-bottom:6px;
+}
+.hero-title{
+  font-family:var(--fn);font-size:1.3rem;font-weight:800;
+  line-height:1.1;text-shadow:0 2px 20px rgba(0,0,0,.9);
+  margin-bottom:4px;
+}
+.hero-desc{
+  font-size:.73rem;color:rgba(255,255,255,.6);max-width:400px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.hero-play{
+  display:flex;align-items:center;gap:6px;
+  background:var(--ac);color:#000;
+  font-size:.78rem;font-weight:800;font-family:var(--fn);
+  padding:8px 18px;border-radius:8px;flex-shrink:0;
+  box-shadow:0 4px 20px rgba(232,160,32,.4);
+  transition:var(--tr);
+}
+.hero-play:hover{background:var(--a2);transform:scale(1.04)}
+.hero-play .mi{font-size:18px}
+
+/* Dots carousel */
+.hero-dots{
+  position:absolute;top:12px;right:14px;z-index:3;
+  display:flex;gap:5px;
+}
+.hero-dot{
+  width:20px;height:3px;border-radius:2px;
+  background:rgba(255,255,255,.25);transition:.4s ease;cursor:pointer;
+}
+.hero-dot.active{background:var(--ac);width:28px}
+
+/* ══ PLAYER — en haut dans .main ══ */
+#player{
+  flex-shrink:0;background:#000;
+  display:none;
+  flex-direction:column;
+  height:min(38vh,280px);
+  position:relative;border-bottom:1px solid rgba(232,160,32,.12);
+}
+#player::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:
+    linear-gradient(90deg,rgba(5,7,15,.55) 0%,transparent 14%),
+    linear-gradient(270deg,rgba(5,7,15,.55) 0%,transparent 14%);
+}
+
+/* Info overlay haut */
+#pinfo{
+  position:absolute;top:0;left:0;right:0;z-index:3;
+  background:linear-gradient(180deg,rgba(0,0,0,.9),rgba(0,0,0,.1) 80%,transparent);
+  padding:10px 14px 28px;
+  display:none;align-items:center;gap:10px;
+  opacity:0;transition:opacity .28s;pointer-events:none;
+}
+#player:hover #pinfo,#player.show #pinfo{opacity:1;pointer-events:auto}
+
+#plogo{
+  width:36px;height:36px;border-radius:8px;
+  object-fit:contain;background:var(--sf);flex-shrink:0;
+  box-shadow:0 2px 12px rgba(0,0,0,.7),0 0 0 1px rgba(232,160,32,.2);
+}
+#pdetails{flex:1;min-width:0}
+#pname{
+  font-size:.86rem;font-weight:700;font-family:var(--fn);
+  text-shadow:0 1px 8px rgba(0,0,0,.9);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+#pgroup{
+  font-size:.64rem;color:rgba(255,255,255,.45);margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+
+/* Bouton fermer */
+#pclose{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);transition:var(--tr);flex-shrink:0;
+}
+#pclose:hover{background:rgba(255,77,94,.7)}
+#pclose .mi{font-size:16px}
+
+/* Vidéo */
+#pvideo{width:100%;height:100%;object-fit:contain;background:#000;display:block;z-index:0}
+
+/* Contrôles bas */
+#pCtrls{
+  position:absolute;bottom:0;left:0;right:0;z-index:3;
+  background:linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.25) 60%,transparent);
+  padding:22px 14px 10px;
+  display:none;align-items:center;gap:6px;
+  opacity:0;transition:opacity .28s;
+}
+#player:hover #pCtrls,#player.show #pCtrls{opacity:1}
+
+.pctrl{
+  display:flex;align-items:center;gap:4px;padding:5px 12px;
+  border-radius:7px;background:rgba(255,255,255,.1);
+  font-size:.7rem;font-weight:700;color:#fff;
+  backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);
+  transition:var(--tr);font-family:var(--fn);
+}
+.pctrl:hover{background:rgba(232,160,32,.3);border-color:rgba(232,160,32,.5)}
+.pctrl .mi{font-size:15px}
+
+#pstatus{
+  flex:1;text-align:right;
+  font-size:.64rem;color:rgba(255,255,255,.5);
+  display:flex;align-items:center;justify-content:flex-end;gap:5px;
+}
+#pstatus::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--gr);animation:blink 2s infinite;flex-shrink:0;
+}
+
+/* ══════════════════════════════════════════════
+   QUICK ACCESS BAR + PILLS
+══════════════════════════════════════════════ */
+.pills{
+  display:flex;gap:5px;padding:8px 14px;overflow-x:auto;flex-shrink:0;
+  border-bottom:1px solid rgba(232,160,32,.08);scrollbar-width:none;
+  align-items:center;background:rgba(8,12,24,.98);
+}
+.pills::-webkit-scrollbar{display:none}
+.pill{
+  padding:5px 14px;border-radius:50px;flex-shrink:0;
+  font-size:.71rem;font-weight:600;font-family:var(--fn);
+  border:1px solid rgba(255,255,255,.08);color:var(--t2);
+  transition:var(--tr);white-space:nowrap;cursor:pointer;
+  display:flex;align-items:center;gap:4px;
+}
+.pill:hover{border-color:rgba(232,160,32,.35);color:var(--ac)}
+.pill.active{
+  background:var(--ac);
+  border-color:transparent;color:#000;font-weight:700;
+  box-shadow:0 2px 14px rgba(232,160,32,.35);
+}
+.pill .mi{font-size:13px;vertical-align:middle}
+
+/* ══════════════════════════════════════════════
+   GRID SCROLLABLE
+══════════════════════════════════════════════ */
+.gw{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;position:relative;
+  background:var(--bg);
+}
+
+/* Header sticky de la grille */
+.gh{
+  padding:10px 16px 9px;
+  background:rgba(5,7,15,.92);
+  border-bottom:1px solid rgba(232,160,32,.07);
+  position:sticky;top:0;z-index:10;backdrop-filter:blur(16px);
+  display:flex;align-items:baseline;gap:10px;
+}
+.gh-title{
+  font-size:.88rem;font-weight:700;color:var(--tx);
+  font-family:var(--fn);
+}
+.gh-count{
+  font-size:.67rem;color:rgba(232,160,32,.45);
+  font-weight:600;
+}
+
+/* Grille */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+  gap:10px;padding:14px;
+}
+
+/* ══ CARD ══ */
+.card{
+  background:var(--sf);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:var(--r);
+  cursor:pointer;transition:all .2s ease;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:6px;padding:14px 7px 10px;aspect-ratio:4/3;
+}
+.card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(232,160,32,.04) 0%,transparent 60%);
+  opacity:0;transition:.2s;
+}
+.card:hover{
+  transform:translateY(-4px) scale(1.01);
+  background:var(--s2);
+  border-color:rgba(232,160,32,.4);
+  box-shadow:0 0 0 1px rgba(232,160,32,.2),0 10px 32px rgba(232,160,32,.12),0 4px 16px rgba(0,0,0,.5);
+}
+.card:hover::before{opacity:1}
+.card:active{transform:scale(.96)}
+.card.now{
+  border-color:rgba(34,211,164,.4);background:var(--s2);
+  box-shadow:0 0 0 2px rgba(34,211,164,.12);
+}
+.card.now::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--gr),var(--ac));
+  opacity:1;
+}
+
+/* Dot live */
+.cflag{position:absolute;top:5px;right:6px;font-size:12px;line-height:1}
+
+.clogo{width:46px;height:32px;object-fit:contain;border-radius:6px}
+.cfb{
+  width:46px;height:32px;border-radius:6px;background:var(--s3);
+  display:flex;align-items:center;justify-content:center;
+}
+.cfb .mi{font-size:22px;color:var(--t2)}
+.cname{
+  font-size:.69rem;font-weight:700;text-align:center;font-family:var(--fn);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden;line-height:1.3;color:var(--tx);width:100%;padding:0 4px;
+}
+.ctag{
+  font-size:.57rem;color:var(--t3);text-align:center;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  width:100%;padding:0 4px;
+}
+.nowico{position:absolute;bottom:4px;right:4px}
+.nowico .mi{font-size:12px;color:var(--gr)}
+
+/* ══ SENTINEL ══ */
+.sentinel{
+  padding:28px;text-align:center;color:var(--t2);
+  font-size:.74rem;display:flex;align-items:center;
+  justify-content:center;gap:8px;
+}
+.sentinel .spin{animation:spin .7s linear infinite;color:var(--ac)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+
+/* ══ EMPTY ══ */
+.empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--t2)}
+.empty .mi{font-size:52px;opacity:.2;margin-bottom:10px;display:block;color:var(--ac)}
+.empty p{font-size:.82rem}
+
+/* ══ TOASTS ══ */
+#toasts{
+  position:fixed;bottom:16px;right:14px;z-index:500;
+  display:flex;flex-direction:column;gap:6px;
+}
+.toast{
+  background:var(--s2);
+  border:1px solid rgba(232,160,32,.15);
+  border-radius:var(--r);
+  padding:11px 15px;min-width:250px;
+  display:flex;align-items:center;gap:10px;
+  animation:slideIn .25s ease;
+  backdrop-filter:blur(12px);
+}
+.toast.error{border-left:3px solid var(--rd);background:rgba(255,77,94,.06)}
+.toast.success{border-left:3px solid var(--gr);background:rgba(34,211,164,.06)}
+.toast .mi{font-size:19px}
+.toast.error .mi{color:var(--rd)}
+.toast.success .mi{color:var(--gr)}
+.toast-msg{flex:1;font-size:.73rem}
+@keyframes slideIn{from{transform:translateX(16px);opacity:0}to{transform:none;opacity:1}}
+
+/* ══ LIVE BADGE ══ */
+.live-badge{
+  display:inline-flex;align-items:center;gap:3px;
+  background:var(--rd);color:#fff;
+  font-size:.52rem;font-weight:800;font-family:var(--fn);
+  padding:2px 6px;border-radius:3px;letter-spacing:.06em;
+}
+.live-dot{
+  width:5px;height:5px;border-radius:50%;background:#fff;
+  animation:blink 1.4s infinite;
+}
+
+/* ══ SEARCH RESULTS HIGHLIGHT ══ */
+.card.search-match{
+  border-color:rgba(232,160,32,.5);
+  background:rgba(232,160,32,.05);
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE MOBILE
+══════════════════════════════════════════════ */
+@media(max-width:768px){
+  .sidebar{
+    position:fixed;left:calc(-1 * var(--sb));
+    top:var(--nav);bottom:0;z-index:160;
+    box-shadow:8px 0 32px rgba(0,0,0,.8);
+    transition:left .22s ease;
+  }
+  .sidebar.open{left:0}
+  #menuToggle{display:flex}
+
+  #player{height:min(52vw,220px)}
+  #heroCarousel{height:min(52vw,220px)}
+
+  .grid{grid-template-columns:repeat(2,1fr)!important;gap:8px;padding:10px}
+  .card{padding:11px 5px 9px}
+  .clogo{width:40px;height:28px}
+  .cfb{width:40px;height:28px}.cfb .mi{font-size:18px}
+  .cname{font-size:.64rem}.ctag{font-size:.55rem}
+
+  .gh{padding:8px 12px 7px}
+  .pills{padding:6px 10px;gap:4px}
+  .pill{padding:4px 11px;font-size:.69rem}
+
+  .quick-access{display:none}
+  .hero-title{font-size:1rem}
+  .hero-play span:not(.mi){display:none}
+  .hero-play{padding:7px 12px}
+}
+@media(max-width:480px){
+  nav{padding:0 10px;gap:8px}
+  .logo-text{font-size:.95rem}
+  .logo-badge{display:none}
+  .search{max-width:none}
+}
+@media(max-width:768px) and (orientation:landscape){
+  #player{height:min(44vh,160px)}
+  #heroCarousel{height:min(44vh,160px)}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))!important;gap:6px}
+}
+
+/* ══════════════════════════════════════════════
+   FLOATING QUICK-ACCESS BAR — toujours visible
+══════════════════════════════════════════════ */
+#floatBar{
+  position:absolute;
+  bottom:12px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:10;
+  display:flex;
+  gap:5px;
+  background:rgba(5,7,15,.82);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(232,160,32,.22);
+  border-radius:50px;
+  padding:5px 8px;
+  box-shadow:0 8px 32px rgba(0,0,0,.75), 0 0 0 1px rgba(232,160,32,.07);
+  white-space:nowrap;
+  overflow-x:auto;
+  scrollbar-width:none;
+  max-width:calc(100% - 20px);
+}
+#floatBar::-webkit-scrollbar{display:none}
+
+.fb-btn{
+  display:flex;align-items:center;gap:4px;
+  padding:5px 12px;border-radius:50px;flex-shrink:0;
+  font-size:.7rem;font-weight:700;font-family:var(--fn);
+  color:var(--t2);transition:var(--tr);
+  border:1px solid transparent;white-space:nowrap;
+}
+.fb-btn:hover{color:var(--ac);background:rgba(232,160,32,.09);border-color:rgba(232,160,32,.2)}
+.fb-btn.active{
+  background:var(--ac);color:#000;
+  box-shadow:0 2px 14px rgba(232,160,32,.4);
+}
+.fb-btn .mi{font-size:13px}
+
+/* Hero channel logo overlay */
+.hero-ch-logo{
+  position:absolute;top:12px;left:14px;z-index:3;
+  width:56px;height:40px;border-radius:10px;
+  object-fit:contain;padding:5px;
+  background:rgba(255,255,255,.1);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 4px 16px rgba(0,0,0,.6);
+}
+.hero-ch-logo-fb{
+  position:absolute;top:12px;left:14px;z-index:3;
+  width:56px;height:40px;border-radius:10px;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;
+}
+.hero-ch-logo-fb .mi{font-size:22px;color:rgba(255,255,255,.4)}
+.hero-cat-tag{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:.62rem;font-weight:700;font-family:var(--fn);
+  color:var(--ac);letter-spacing:.08em;margin-bottom:4px;
+  text-transform:uppercase;
+}
+
+@media(max-width:768px){
+  #floatBar{gap:3px;padding:4px 7px;bottom:8px}
+  .fb-btn{padding:4px 9px;font-size:.65rem}
+  .fb-btn .mi{font-size:12px}
+  .hero-ch-logo,.hero-ch-logo-fb{width:44px;height:32px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <button id="menuToggle"><span class="mi">menu</span></button>
+
+  <a class="logo" href="/">
+    <img class="logo-img" src="https://iili.io/Br3av6u.png" alt="Tafita TV" onerror="this.style.display='none'">
+    <div>
+      <div class="logo-text">TV LIVE</div>
+      <div class="logo-badge">Rtm prod mg</div>
+    </div>
+  </a>
+
+  <div class="search">
+    <span class="mi srch-icon">search</span>
+    <input type="text" id="searchInput" placeholder="Rechercher une chaîne..." autocomplete="off">
+    <button id="clearSearch"><span class="mi">close</span></button>
+  </div>
+
+  <!-- Accès rapides -->
+  <div class="quick-access" id="quickAccess">
+    <button class="qa-btn" data-quick="sport" onclick="quickFilter('sport',this)">
+      <span class="mi">sports_soccer</span><span>Sport</span>
+    </button>
+    <button class="qa-btn" data-quick="news" onclick="quickFilter('news',this)">
+      <span class="mi">newspaper</span><span>News</span>
+    </button>
+    <button class="qa-btn" data-quick="movies" onclick="quickFilter('movies',this)">
+      <span class="mi">movie</span><span>Films</span>
+    </button>
+    <button class="qa-btn" data-quick="kids" onclick="quickFilter('kids',this)">
+      <span class="mi">child_care</span><span>Kids</span>
+    </button>
+    <button class="qa-btn" data-quick="music" onclick="quickFilter('music',this)">
+      <span class="mi">music_note</span><span>Music</span>
+    </button>
+  </div>
+
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="location.href='/streaming'">
+      <span class="mi">movie</span>
+      <span>Films &amp; Séries</span>
+    </button>
+  </div>
+</nav>
+
+<!-- Overlay sidebar mobile -->
+<div id="sbOverlay"></div>
+
+<!-- ══ SHELL : sidebar + main ══ -->
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="slbl">Navigation</div>
+    <button class="nb active" data-v="all"><span class="mi">live_tv</span>Toutes<span class="cnt" id="totCount">—</span></button>
+    <button class="nb" data-v="mg"><span class="mi">satellite_alt</span>🇲🇬 Madagascar</button>
+    <div class="sdiv"></div>
+    <div class="slbl">Catégories</div>
+    <button class="nb" data-v="sport"><span class="mi">sports_soccer</span>Sport</button>
+    <button class="nb" data-v="news"><span class="mi">newspaper</span>Actualités</button>
+    <button class="nb" data-v="kids"><span class="mi">child_care</span>Enfants</button>
+    <button class="nb" data-v="movies"><span class="mi">theaters</span>Films TV</button>
+    <button class="nb" data-v="music"><span class="mi">music_note</span>Musique</button>
+    <button class="nb" data-v="nature"><span class="mi">forest</span>Nature</button>
+    <button class="nb" data-v="religion"><span class="mi">church</span>Religion</button>
+    <button class="nb" data-v="radio"><span class="mi">radio</span>Radio</button>
+    <button class="nb" data-v="action"><span class="mi">local_fire_department</span>Action</button>
+    <button class="nb" data-v="documentary"><span class="mi">video_library</span>Documentaire</button>
+    <button class="nb" data-v="entertainment"><span class="mi">theater_comedy</span>Divertissement</button>
+    <button class="nb" data-v="fr"><span class="mi">language</span>🇫🇷 France</button>
+    <button class="nb" data-v="us"><span class="mi">language</span>🇺🇸 USA</button>
+    <button class="nb" data-v="uk"><span class="mi">language</span>🇬🇧 UK</button>
+    <button class="nb" data-v="arabic"><span class="mi">language</span>🌙 Arabe</button>
+    <div class="sdiv"></div>
+    <div class="slbl">🌍 Pays</div>
+    <div class="csel">
+      <div class="cbox">
+        <div class="csrch">
+          <span class="mi">search</span>
+          <input type="text" id="countryInput" placeholder="mg, fr, us...">
+        </div>
+        <div class="clist" id="countryList"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- ══ HERO CAROUSEL — quand aucun player actif ══ -->
+    <div id="heroCarousel">
+      <div class="hero-dots" id="heroDots"></div>
+      <div id="heroSlides"></div>
+      <!-- Logo chaîne hero -->
+      <div id="heroChLogoWrap"></div>
+      <div class="hero-info">
+        <div class="hero-meta">
+          <div class="hero-badge"><span class="mi" style="font-size:11px">circle</span> EN DIRECT</div>
+          <div class="hero-cat-tag" id="heroCat"></div>
+          <div class="hero-title" id="heroTitle">Chargement...</div>
+          <div class="hero-desc" id="heroDesc">Les meilleures chaînes du monde en un clic</div>
+        </div>
+        <button class="hero-play" id="heroPlayBtn" onclick="heroPlay()">
+          <span class="mi">play_arrow</span>
+          <span>Regarder</span>
+        </button>
+      </div>
+
+      <!-- BARRE FLOTTANTE — sélection rapide toujours visible -->
+      <div id="floatBar">
+        <button class="fb-btn active" data-fcat="all"><span class="mi">live_tv</span>Tout</button>
+        <button class="fb-btn" data-fcat="sport"><span class="mi">sports_soccer</span>Sport</button>
+        <button class="fb-btn" data-fcat="news"><span class="mi">newspaper</span>News</button>
+        <button class="fb-btn" data-fcat="movies"><span class="mi">movie</span>Films</button>
+        <button class="fb-btn" data-fcat="kids"><span class="mi">child_care</span>Kids</button>
+        <button class="fb-btn" data-fcat="music"><span class="mi">music_note</span>Musique</button>
+        <button class="fb-btn" data-fcat="nature"><span class="mi">forest</span>Nature</button>
+        <button class="fb-btn" data-fcat="mg"><span class="mi">satellite_alt</span>🇲🇬 MG</button>
+        <button class="fb-btn" data-fcat="radio"><span class="mi">radio</span>Radio</button>
+        <button class="fb-btn" data-fcat="religion"><span class="mi">church</span>Religion</button>
+        <button class="fb-btn" data-fcat="action"><span class="mi">local_fire_department</span>Action</button>
+        <button class="fb-btn" data-fcat="documentary"><span class="mi">video_library</span>Docu</button>
+        <button class="fb-btn" data-fcat="entertainment"><span class="mi">theater_comedy</span>Divert.</button>
+        <button class="fb-btn" data-fcat="fr"><span class="mi">language</span>🇫🇷 France</button>
+        <button class="fb-btn" data-fcat="us"><span class="mi">language</span>🇺🇸 USA</button>
+        <button class="fb-btn" data-fcat="uk"><span class="mi">language</span>🇬🇧 UK</button>
+        <button class="fb-btn" data-fcat="arabic"><span class="mi">language</span>🌙 Arabe</button>
+      </div>
+    </div>
+
+    <!-- PLAYER EN HAUT — IDs originaux 100% conservés -->
+    <div id="player">
+      <div id="pinfo">
+        <img id="plogo" src="" alt="">
+        <div id="pdetails">
+          <div id="pname"></div>
+          <div id="pgroup"></div>
+        </div>
+        <button id="pclose"><span class="mi">close</span></button>
+      </div>
+      <video id="pvideo" controls autoplay playsinline></video>
+      <div id="pCtrls">
+        <button class="pctrl" id="pRetry"><span class="mi">refresh</span> Réessayer</button>
+        <button class="pctrl" id="pPip"><span class="mi">picture_in_picture_alt</span> PiP</button>
+        <div id="pstatus">En direct</div>
+      </div>
+    </div>
+
+    <!-- GRID SCROLLABLE — ids originaux conservés -->
+    <div class="gw" id="gw">
+      <div class="gh">
+        <div class="gh-title" id="gtitle">📺 Toutes les chaînes</div>
+        <div class="gh-count" id="gcnt">Chargement...</div>
+      </div>
+      <div class="grid" id="chGrid"></div>
+      <div class="sentinel" id="sentinel" style="display:none">
+        <span class="mi spin">refresh</span>
+        <span id="sentinelTxt">Chargement...</span>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- TOASTS — id original conservé -->
+<div id="toasts"></div>
+
+<!-- ══ GLUE SCRIPT ══ -->
+<script>
+(function(){
+  /* ── Sidebar drawer mobile ── */
+  var btn = document.getElementById('menuToggle');
+  var sb  = document.getElementById('sidebar');
+  var ov  = document.getElementById('sbOverlay');
+  if(btn&&sb&&ov){
+    btn.addEventListener('click', function(){ sb.classList.add('open'); ov.classList.add('on'); });
+    ov.addEventListener('click',  function(){ sb.classList.remove('open'); ov.classList.remove('on'); });
+  }
+
+  /* ── Touch player → show overlays 3s ── */
+  var pl = document.getElementById('player');
+  if(pl) pl.addEventListener('touchstart', function(){
+    pl.classList.add('show');
+    clearTimeout(pl._t);
+    pl._t = setTimeout(function(){ pl.classList.remove('show'); }, 3000);
+  },{passive:true});
+
+  /* ── Observer: quand player devient visible, cache le carousel ── */
+  var hero = document.getElementById('heroCarousel');
+  var pclose = document.getElementById('pclose');
+  if(pclose && hero){
+    pclose.addEventListener('click', function(){
+      setTimeout(function(){
+        if(pl && pl.style.display === 'none' || !pl.style.display || pl.style.display === ''){
+          hero.classList.remove('hidden');
+        }
+      }, 100);
+    });
+  }
+
+  // Observe player display changes
+  if(pl && hero){
+    var mo = new MutationObserver(function(){
+      var vis = pl.style.display && pl.style.display !== 'none';
+      hero.classList.toggle('hidden', vis);
+    });
+    mo.observe(pl, {attributes:true, attributeFilter:['style']});
+  }
+})();
+
+/* ══ QUICK ACCESS FILTER ══ */
+function quickFilter(cat, btn){
+  // Active style quick-access
+  document.querySelectorAll('.qa-btn').forEach(function(b){ b.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
+
+  // Sync floatBar
+  document.querySelectorAll('.fb-btn').forEach(function(b){ b.classList.remove('active'); });
+  var fbBtn = document.querySelector('.fb-btn[data-fcat="'+cat+'"]');
+  if(fbBtn) fbBtn.classList.add('active');
+
+  // Déclenche sidebar (script_iptv.js l'écoute)
+  document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('active','on'); });
+  var sideBtn = document.querySelector('.nb[data-v="'+cat+'"]');
+  if(sideBtn){ sideBtn.classList.add('active'); sideBtn.click(); }
+}
+
+/* ══ FLOATING BAR — sync avec sidebar ══ */
+document.querySelectorAll('.fb-btn').forEach(function(fbBtn){
+  fbBtn.addEventListener('click', function(){
+    var cat = this.dataset.fcat;
+    // Active style floatBar
+    document.querySelectorAll('.fb-btn').forEach(function(b){ b.classList.remove('active'); });
+    this.classList.add('active');
+    // Active style sidebar
+    document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('active','on'); });
+    var sideBtn = document.querySelector('.nb[data-v="'+cat+'"]');
+    if(sideBtn){
+      sideBtn.classList.add('active');
+      // Déclenche le script_iptv.js via click
+      sideBtn.click();
+    }
+    // Ferme la sidebar mobile si ouverte
+    var sb=document.getElementById('sidebar'), ov=document.getElementById('sbOverlay');
+    if(sb) sb.classList.remove('open');
+    if(ov) ov.classList.remove('on');
+  });
+});
+
+// Quand la sidebar change (clic direct), synchro floatBar
+document.querySelectorAll('.nb[data-v]').forEach(function(nb){
+  nb.addEventListener('click', function(){
+    var cat = this.dataset.v;
+    document.querySelectorAll('.fb-btn').forEach(function(b){ b.classList.remove('active'); });
+    var match = document.querySelector('.fb-btn[data-fcat="'+cat+'"]');
+    if(match) match.classList.add('active');
+  });
+});
+
+/* ══ HERO CAROUSEL ══ */
+var heroData = [
+  {
+    title:'BeIN Sports 1',
+    cat:'⚽ Sport',
+    fcat:'sport',
+    desc:'Football, Ligue des Champions, NBA et tous les grands sports en direct',
+    bg:'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=1200&q=80',
+    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/BeIN_Sports_logo.svg/200px-BeIN_Sports_logo.svg.png'
+  },
+  {
+    title:'CNN International',
+    cat:'📰 Actualités',
+    fcat:'news',
+    desc:'Informations mondiales en continu — analyses, reportages et breaking news 24h/24',
+    bg:'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=80',
+    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/CNN.svg/200px-CNN.svg.png'
+  },
+  {
+    title:'Disney Channel',
+    cat:'🧒 Enfants',
+    fcat:'kids',
+    desc:'Dessins animés, aventures Disney et magie pour toute la famille',
+    bg:'https://images.unsplash.com/photo-1611348586804-61bf6c080437?w=1200&q=80',
+    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Disney_Channel_logo.svg/200px-Disney_Channel_logo.svg.png'
+  },
+  {
+    title:'Ciné+ Premier',
+    cat:'🎬 Films TV',
+    fcat:'movies',
+    desc:'Les plus grands films du cinéma mondial en exclusivité HD',
+    bg:'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200&q=80',
+    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Canal%2B_logo.svg/200px-Canal%2B_logo.svg.png'
+  },
+  {
+    title:'MTV Hits',
+    cat:'🎵 Musique',
+    fcat:'music',
+    desc:'Clips vidéo, concerts et hits du monde entier non-stop',
+    bg:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80',
+    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/MTV_Logo_2021.svg/200px-MTV_Logo_2021.svg.png'
+  },
+  {
+    title:'TVM Madagascar',
+    cat:'🇲🇬 Madagascar',
+    fcat:'mg',
+    desc:'Télévision Malagasy — actualités locales, culture et divertissement malgache',
+    bg:'https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=1200&q=80',
+    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Flag_of_Madagascar.svg/200px-Flag_of_Madagascar.svg.png'
+  },
+  {
+    title:'Nat Geo Wild',
+    cat:'🌿 Nature',
+    fcat:'nature',
+    desc:'Faune sauvage, océans et merveilles de la nature en HD',
+    bg:'https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=1200&q=80',
+    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Nat_Geo_WILD_Logo.svg/200px-Nat_Geo_WILD_Logo.svg.png'
+  },
+  {
+    title:'Euronews',
+    cat:'📰 Actualités',
+    fcat:'news',
+    desc:'L\'actualité européenne et internationale en plusieurs langues',
+    bg:'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=1200&q=80',
+    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Euronews_logo.svg/200px-Euronews_logo.svg.png'
+  },
+];
+
+var heroIdx = 0;
+var heroTimer = null;
+var heroChannel = null; // will be set when channels load
+
+(function initHero(){
+  var slidesEl = document.getElementById('heroSlides');
+  var dotsEl   = document.getElementById('heroDots');
+  if(!slidesEl || !dotsEl) return;
+
+  heroData.forEach(function(d, i){
+    var slide = document.createElement('div');
+    slide.className = 'hero-slide' + (i===0?' active':'');
+    slide.dataset.idx = i;
+    slide.innerHTML = '<img src="'+d.bg+'" alt="'+d.title+'" loading="lazy">';
+    slide.addEventListener('click', function(){ heroPlay(); });
+    slidesEl.appendChild(slide);
+
+    var dot = document.createElement('div');
+    dot.className = 'hero-dot'+(i===0?' active':'');
+    dot.addEventListener('click', function(){ goHero(i); clearInterval(heroTimer); });
+    dotsEl.appendChild(dot);
+  });
+
+  updateHeroInfo(0);
+  heroTimer = setInterval(function(){ goHero((heroIdx+1)%heroData.length); }, 5500);
+})();
+
+function goHero(idx){
+  var slides = document.querySelectorAll('.hero-slide');
+  var dots   = document.querySelectorAll('.hero-dot');
+  slides.forEach(function(s){ s.classList.remove('active'); });
+  dots.forEach(function(d){ d.classList.remove('active'); });
+  slides[idx] && slides[idx].classList.add('active');
+  dots[idx]   && dots[idx].classList.add('active');
+  heroIdx = idx;
+  updateHeroInfo(idx);
+}
+
+function updateHeroInfo(idx){
+  var d  = heroData[idx];
+  var t  = document.getElementById('heroTitle');
+  var ds = document.getElementById('heroDesc');
+  var ct = document.getElementById('heroCat');
+  var lw = document.getElementById('heroChLogoWrap');
+  if(t)  t.textContent  = d.title;
+  if(ds) ds.textContent = d.desc;
+  if(ct) ct.textContent = d.cat;
+
+  // Mise à jour logo chaîne
+  if(lw){
+    lw.innerHTML = '';
+    var img = document.createElement('img');
+    img.src = d.logo;
+    img.alt = d.title;
+    img.className = 'hero-ch-logo';
+    img.onerror = function(){
+      var fb = document.createElement('div');
+      fb.className = 'hero-ch-logo-fb';
+      fb.innerHTML = '<span class="mi">tv</span>';
+      if(lw) lw.innerHTML=''; lw.appendChild(fb);
+    };
+    lw.appendChild(img);
+  }
+}
+
+function heroPlay(){
+  var d = heroData[heroIdx];
+  // Déclenche floatBar pour cette catégorie
+  var fbBtn = document.querySelector('.fb-btn[data-fcat="'+d.fcat+'"]');
+  if(fbBtn){ fbBtn.click(); }
+  // Lance la première chaîne correspondante après chargement
+  setTimeout(function(){
+    var cards = document.querySelectorAll('#chGrid .card');
+    if(cards.length > 0){
+      var keyword = d.title.split(' ')[0].toLowerCase();
+      var found = false;
+      cards.forEach(function(card){
+        if(!found){
+          var nm = card.querySelector('.cname');
+          if(nm && nm.textContent.toLowerCase().indexOf(keyword) !== -1){
+            card.click(); found = true;
+          }
+        }
+      });
+      if(!found) cards[0].click();
+    }
+  }, 500);
+}
+</script>
+
+<script src="script_iptv.js"></script>
+
+</body>
+</html>
