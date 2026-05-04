@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
+import 'package:cached_network_image/cached_network_image.dart'; // LA LIGNE AJOUTÉE ICI
 import '../models/channel.dart';
 import '../utils/constants.dart';
 import '../services/api_service.dart';
