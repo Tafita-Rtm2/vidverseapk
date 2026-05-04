@@ -30,11 +30,11 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/logo.jpg"
+  image_path: "assets/logo.png"
   adaptive_icon_background: "#000000"
-  adaptive_icon_foreground: "assets/logo.jpg"
+  adaptive_icon_foreground: "assets/logo.png"
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/logo.jpg  # ✅ Vérifie que ce chemin est EXACTEMENT le même que ton fichier
+    - assets/logo.png # ✅ Vérifie que ce chemin est EXACTEMENT le même que ton fichier
