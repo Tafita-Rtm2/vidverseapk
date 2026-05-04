@@ -13,8 +13,7 @@ dependencies:
 
   http: ^1.1.0
 
-  # ✅ REMPLACÉ : better_player est remplacé par better_player_plus 
-  # pour corriger l'erreur 'hashValues' et la compatibilité Flutter 3.x
+  # ✅ Lecteur vidéo compatible Flutter 3.x
   better_player_plus: ^1.2.1
 
   cached_network_image: ^3.3.0
@@ -29,6 +28,18 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+  
+  # ✅ Ajouté pour corriger le problème d'icône floue
+  flutter_launcher_icons: ^0.13.1
+
+# Configuration du générateur d'icônes
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo.png"
+  # Configuration Adaptive Icon pour Android (évite l'effet flou)
+  adaptive_icon_background: "#0F111A" # Remplace par ta couleur de fond exacte
+  adaptive_icon_foreground: "assets/logo.png" 
 
 flutter:
   uses-material-design: true
