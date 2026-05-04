@@ -29,19 +29,19 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^3.0.0
   
-  # ✅ Ajouté pour corriger le problème d'icône floue
+  # ✅ Outil de génération d'icônes
   flutter_launcher_icons: ^0.13.1
 
 # Configuration du générateur d'icônes
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/logo.png"
-  # Configuration Adaptive Icon pour Android (évite l'effet flou)
-  adaptive_icon_background: "#0F111A" # Remplace par ta couleur de fond exacte
-  adaptive_icon_foreground: "assets/logo.png" 
+  image_path: "assets/logo.jpg"
+  # Configuration Adaptive Icon pour Android (évite le flou sur MIUI/Xiaomi)
+  adaptive_icon_background: "#000000" 
+  adaptive_icon_foreground: "assets/logo.jpg"
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/logo.png
+    - assets/logo.jpg
