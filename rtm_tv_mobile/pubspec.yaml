@@ -13,9 +13,9 @@ dependencies:
 
   http: ^1.1.0
 
-  # ✅ REMPLACE video_player + chewie
-  # better_player supporte : HLS avec headers custom, retry auto, buffering robuste
-  better_player: ^0.0.84
+  # ✅ REMPLACÉ : better_player est remplacé par better_player_plus 
+  # pour corriger l'erreur 'hashValues' et la compatibilité Flutter 3.x
+  better_player_plus: ^6.0.2
 
   cached_network_image: ^3.3.0
   carousel_slider: ^5.0.0
