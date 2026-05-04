@@ -17,8 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ApiService _apiService = ApiService();
-  // On garde le controller mais on ne force plus le scroll vers le haut au clic
-  final ScrollController _scrollController = ScrollController(); 
+  final ScrollController _scrollController = ScrollController();
   
   List<Channel> _allChannels = [];
   List<Channel> _filteredChannels = [];
@@ -76,7 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // ✅ CORRECTION : On change de chaîne SANS remonter le scroll
   void _playChannel(Channel ch) {
     setState(() {
       _selectedChannel = ch;
@@ -99,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         title: Row(
           children: [
-            Image.asset('assets/logo.png', 
+            Image.asset('assets/logo.jpg', // Mis à jour en .jpg selon ton fichier
               width: 36, 
               height: 36, 
               errorBuilder: (c, e, s) => const Icon(Icons.tv, color: AppColors.accent)
@@ -108,14 +106,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'TV LIVE',
-                  style: GoogleFonts.syne(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.accent),
-                ),
-                Text(
-                  'Rtm prod mg',
-                  style: GoogleFonts.syne(fontSize: 8, fontWeight: FontWeight.w700, color: AppColors.accent.withOpacity(0.7)),
-                ),
+                Text('TV LIVE', style: GoogleFonts.syne(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.accent)),
+                Text('Rtm prod mg', style: GoogleFonts.syne(fontSize: 8, fontWeight: FontWeight.w700, color: AppColors.accent.withOpacity(0.7))),
               ],
             ),
           ],
@@ -129,36 +121,41 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          // ZONE FIXE : Vidéo (si sélectionnée) ou Barre de recherche
+          // ✅ FIX 1 : Le lecteur s'affiche au-dessus SI une chaîne est sélectionnée
           if (_selectedChannel != null)
             VideoPlayerWidget(
               channel: _selectedChannel!,
               onClose: () => setState(() => _selectedChannel = null),
-            )
-          else
-            _buildSearchBar(),
+            ),
 
-          // ZONE DE DÉFILEMENT
+          // ✅ FIX 2 : La barre de recherche est TOUJOURS présente ici
+          _buildSearchBar(),
+
           Expanded(
             child: _isLoading
                 ? _buildShimmerGrid()
                 : CustomScrollView(
                     controller: _scrollController,
                     slivers: [
-                      // Le Carousel disparaît si on regarde une TV pour libérer de l'espace
+                      // Carrousel (uniquement si pas de vidéo pour gagner de la place)
                       if (_selectedChannel == null)
                         SliverToBoxAdapter(
                           child: HeroCarousel(onPlay: (idx) {
-                            final ch = _allChannels.firstWhere(
-                              (c) => (c.group ?? '').toLowerCase().contains('sport'), 
-                              orElse: () => _allChannels.first
-                            );
-                            _playChannel(ch);
+                             final ch = _allChannels.firstWhere((c) => (c.group ?? '').toLowerCase().contains('sport'), orElse: () => _allChannels.first);
+                             _playChannel(ch);
                           }),
                         ),
                       
-                      // ✅ SELECTION RAPIDE (Pills) : Toujours présente ici
-                      _buildCategoryPills(),
+                      // ✅ FIX 3 : Les catégories deviennent "Sticky" (elles restent en haut au scroll)
+                      SliverPersistentHeader(
+                        pinned: true,
+                        delegate: _StickyCategoryDelegate(
+                          child: Container(
+                            color: AppColors.bg, // Fond solide pour ne pas voir à travers au scroll
+                            child: _buildCategoryPills(),
+                          ),
+                        ),
+                      ),
                       
                       _buildGridHeader(),
                       _buildChannelGrid(),
@@ -186,18 +183,9 @@ class _HomeScreenState extends State<HomeScreen> {
           filled: true,
           fillColor: Colors.white.withOpacity(0.04),
           contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(color: AppColors.accent.withOpacity(0.18)),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(color: AppColors.accent.withOpacity(0.18)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(color: AppColors.accent.withOpacity(0.55)),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(50), borderSide: BorderSide(color: AppColors.accent.withOpacity(0.18))),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(50), borderSide: BorderSide(color: AppColors.accent.withOpacity(0.18))),
+          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(50), borderSide: BorderSide(color: AppColors.accent.withOpacity(0.55))),
         ),
       ),
     );
@@ -205,42 +193,33 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildCategoryPills() {
     final categories = ['all', 'sport', 'news', 'movies', 'kids', 'music', 'nature', 'radio'];
-    return SliverToBoxAdapter(
-      child: Container(
-        height: 50,
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          itemCount: categories.length,
-          itemBuilder: (context, index) {
-            final cat = categories[index];
-            final isActive = _currentFilter == cat;
-            return Padding(
-              padding: const EdgeInsets.only(right: 5),
-              child: ChoiceChip(
-                label: Text(cat == 'all' ? 'Toutes' : cat.toUpperCase()),
-                selected: isActive,
-                onSelected: (selected) {
-                  setState(() => _currentFilter = cat);
-                  _applyFilters();
-                },
-                labelStyle: GoogleFonts.syne(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: isActive ? Colors.black : AppColors.textSecondary,
-                ),
-                selectedColor: AppColors.accent,
-                backgroundColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50),
-                  side: BorderSide(color: isActive ? Colors.transparent : Colors.white.withOpacity(0.08)),
-                ),
-                showCheckmark: false,
-              ),
-            );
-          },
-        ),
+    return Container(
+      height: 50,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          final cat = categories[index];
+          final isActive = _currentFilter == cat;
+          return Padding(
+            padding: const EdgeInsets.only(right: 5),
+            child: ChoiceChip(
+              label: Text(cat == 'all' ? 'Toutes' : cat.toUpperCase()),
+              selected: isActive,
+              onSelected: (selected) {
+                setState(() => _currentFilter = cat);
+                _applyFilters();
+              },
+              labelStyle: GoogleFonts.syne(fontSize: 11, fontWeight: FontWeight.w600, color: isActive ? Colors.black : AppColors.textSecondary),
+              selectedColor: AppColors.accent,
+              backgroundColor: Colors.transparent,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50), side: BorderSide(color: isActive ? Colors.transparent : Colors.white.withOpacity(0.08))),
+              showCheckmark: false,
+            ),
+          );
+        },
       ),
     );
   }
@@ -251,15 +230,9 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 5),
         child: Row(
           children: [
-            Text(
-              _currentFilter == 'all' ? '📺 Toutes les chaînes' : '📺 ${_currentFilter.toUpperCase()}',
-              style: GoogleFonts.syne(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.text),
-            ),
+            Text(_currentFilter == 'all' ? '📺 Toutes les chaînes' : '📺 ${_currentFilter.toUpperCase()}', style: GoogleFonts.syne(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.text)),
             const SizedBox(width: 10),
-            Text(
-              '${_filteredChannels.length} chaînes',
-              style: TextStyle(fontSize: 11, color: AppColors.accent.withOpacity(0.45), fontWeight: FontWeight.w600),
-            ),
+            Text('${_filteredChannels.length} chaînes', style: TextStyle(fontSize: 11, color: AppColors.accent.withOpacity(0.45), fontWeight: FontWeight.w600)),
           ],
         ),
       ),
@@ -284,20 +257,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return SliverPadding(
       padding: const EdgeInsets.all(14),
       sliver: SliverGrid(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          childAspectRatio: 4 / 3,
-        ),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, childAspectRatio: 4 / 3),
         delegate: SliverChildBuilderDelegate(
           (context, index) {
             final ch = _filteredChannels[index];
-            return ChannelCard(
-              channel: ch,
-              isNowPlaying: _selectedChannel?.id == ch.id,
-              onTap: () => _playChannel(ch), // Appel de la fonction sans scroll
-            );
+            return ChannelCard(channel: ch, isNowPlaying: _selectedChannel?.id == ch.id, onTap: () => _playChannel(ch));
           },
           childCount: _filteredChannels.length,
         ),
@@ -311,16 +275,9 @@ class _HomeScreenState extends State<HomeScreen> {
       highlightColor: AppColors.s2,
       child: GridView.builder(
         padding: const EdgeInsets.all(14),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          childAspectRatio: 4 / 3,
-        ),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10, childAspectRatio: 4 / 3),
         itemCount: 10,
-        itemBuilder: (context, index) => Container(
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
-        ),
+        itemBuilder: (context, index) => Container(decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14))),
       ),
     );
   }
@@ -358,10 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 5),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Text(
-          title.toUpperCase(),
-          style: GoogleFonts.syne(fontSize: 9, fontWeight: FontWeight.w700, color: AppColors.accent.withOpacity(0.45), letterSpacing: 1.4),
-        ),
+        child: Text(title.toUpperCase(), style: GoogleFonts.syne(fontSize: 9, fontWeight: FontWeight.w700, color: AppColors.accent.withOpacity(0.45), letterSpacing: 1.4)),
       ),
     );
   }
@@ -370,10 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final isActive = _currentFilter == filter;
     return ListTile(
       leading: Icon(icon, size: 18, color: isActive ? AppColors.accent : AppColors.textSecondary),
-      title: Text(
-        title,
-        style: GoogleFonts.dmSans(fontSize: 13, fontWeight: isActive ? FontWeight.w600 : FontWeight.w500, color: isActive ? AppColors.accent : AppColors.textSecondary),
-      ),
+      title: Text(title, style: GoogleFonts.dmSans(fontSize: 13, fontWeight: isActive ? FontWeight.w600 : FontWeight.w500, color: isActive ? AppColors.accent : AppColors.textSecondary)),
       onTap: () {
         setState(() => _currentFilter = filter);
         _applyFilters();
@@ -386,4 +337,23 @@ class _HomeScreenState extends State<HomeScreen> {
       dense: true,
     );
   }
+}
+
+// ✅ CLASSE POUR RENDRE LES CATÉGORIES "STICKY"
+class _StickyCategoryDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  _StickyCategoryDelegate({required this.child});
+
+  @override
+  double get minExtent => 50.0;
+  @override
+  double get maxExtent => 50.0;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return child;
+  }
+
+  @override
+  bool shouldRebuild(_StickyCategoryDelegate oldDelegate) => false;
 }
