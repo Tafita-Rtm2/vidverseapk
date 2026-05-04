@@ -20,7 +20,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.ggmg.rtm_tv_mobile"
+        applicationId = "com.example.rtm_tv_mobile"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
