@@ -1,7 +1,6 @@
 name: rtm_tv_mobile
 description: "A new Flutter project."
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
@@ -10,12 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   http: ^1.1.0
-
-  # ✅ Lecteur vidéo compatible Flutter 3.x
   better_player_plus: ^1.2.1
-
   cached_network_image: ^3.3.0
   carousel_slider: ^5.0.0
   flutter_blurhash: ^0.8.2
@@ -28,17 +23,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
-  
-  # ✅ Outil pour générer les icônes
   flutter_launcher_icons: ^0.13.1
 
-# Configuration du générateur d'icônes
 flutter_launcher_icons:
-  android: "launcher_icon"
+  android: true
   ios: true
   image_path: "assets/logo.png"
-  # Configuration Adaptive Icon pour Android (évite le flou)
-  adaptive_icon_background: "#000000" 
+  adaptive_icon_background: "#000000"
   adaptive_icon_foreground: "assets/logo.png"
 
 flutter:
