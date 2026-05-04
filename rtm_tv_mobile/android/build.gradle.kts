@@ -25,14 +25,16 @@ tasks.register<Delete>("clean") {
 }
 
 // ⚡ FIX CRITIQUE POUR BETTER_PLAYER
+// ... gardez le début du fichier identique ...
+
 subprojects {
-    afterEvaluate {
-        if (project.hasProperty("android")) {
-            val android = project.extensions.getByName("android") as com.android.build.gradle.BaseExtension
-            // Si le plugin n'a pas de namespace (erreur better_player), on en force un
-            if (android.namespace == null) {
-                android.namespace = "com.jhomlala.better_player"
-            }
+    // On applique le correctif immédiatement au lieu d'attendre l'afterEvaluate
+    plugins.withType<com.android.build.gradle.api.AndroidBasePlugin> {
+        val android = extensions.getByType<com.android.build.gradle.BaseExtension>()
+        if (android.namespace == null) {
+            android.namespace = "com.example.rtm_tv_mobile"
+            println("🔧 Fix Namespace forcé pour : ${project.name}")
         }
     }
+}
 }
