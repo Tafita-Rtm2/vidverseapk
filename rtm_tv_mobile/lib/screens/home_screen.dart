@@ -17,7 +17,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ApiService _apiService = ApiService();
-  final ScrollController _scrollController = ScrollController(); // Pour contrôler le scroll
+  // On garde le controller mais on ne force plus le scroll vers le haut au clic
+  final ScrollController _scrollController = ScrollController(); 
+  
   List<Channel> _allChannels = [];
   List<Channel> _filteredChannels = [];
   bool _isLoading = true;
@@ -74,6 +76,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // ✅ CORRECTION : On change de chaîne SANS remonter le scroll
+  void _playChannel(Channel ch) {
+    setState(() {
+      _selectedChannel = ch;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,10 +127,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      // --- STRUCTURE MODIFIÉE ICI ---
       body: Column(
         children: [
-          // 1. ZONE FIXE : Vidéo ou Barre de recherche
+          // ZONE FIXE : Vidéo (si sélectionnée) ou Barre de recherche
           if (_selectedChannel != null)
             VideoPlayerWidget(
               channel: _selectedChannel!,
@@ -130,14 +138,14 @@ class _HomeScreenState extends State<HomeScreen> {
           else
             _buildSearchBar(),
 
-          // 2. ZONE DE DÉFILEMENT : Liste des chaînes
+          // ZONE DE DÉFILEMENT
           Expanded(
             child: _isLoading
                 ? _buildShimmerGrid()
                 : CustomScrollView(
                     controller: _scrollController,
                     slivers: [
-                      // Carrousel uniquement si aucune vidéo n'est lancée
+                      // Le Carousel disparaît si on regarde une TV pour libérer de l'espace
                       if (_selectedChannel == null)
                         SliverToBoxAdapter(
                           child: HeroCarousel(onPlay: (idx) {
@@ -149,7 +157,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           }),
                         ),
                       
+                      // ✅ SELECTION RAPIDE (Pills) : Toujours présente ici
                       _buildCategoryPills(),
+                      
                       _buildGridHeader(),
                       _buildChannelGrid(),
                     ],
@@ -157,17 +167,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  // Fonction pour lancer une chaîne et remonter la liste
-  void _playChannel(Channel ch) {
-    setState(() => _selectedChannel = ch);
-    // On remonte le scroll au début pour bien voir le player
-    _scrollController.animateTo(
-      0, 
-      duration: const Duration(milliseconds: 300), 
-      curve: Curves.easeOut
     );
   }
 
@@ -297,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return ChannelCard(
               channel: ch,
               isNowPlaying: _selectedChannel?.id == ch.id,
-              onTap: () => _playChannel(ch),
+              onTap: () => _playChannel(ch), // Appel de la fonction sans scroll
             );
           },
           childCount: _filteredChannels.length,
