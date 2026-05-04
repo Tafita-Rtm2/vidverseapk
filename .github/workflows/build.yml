@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4 # Mis à jour de v3 à v4
         with:
           distribution: 'zulu'
           java-version: '17'
@@ -37,7 +37,7 @@ jobs:
             --dart-define=AUTH_KEY=${{ secrets.AUTH_KEY }}
 
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 # LA CORRECTION : passage de v3 à v4
         with:
           name: rtm-tv-release
           path: rtm_tv_mobile/build/app/outputs/flutter-apk/app-release.apk
