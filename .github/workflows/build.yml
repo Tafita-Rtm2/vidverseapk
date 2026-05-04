@@ -20,8 +20,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.0'
-          channel: 'stable'
+          channel: 'stable' # Force l'utilisation de la version la plus récente (ex: 3.22+)
 
       - name: Install dependencies
         run: |
@@ -31,7 +30,7 @@ jobs:
       - name: Build APK
         run: |
           cd rtm_tv_mobile
-          flutter build apk --release --split-per-abi \
+          flutter build apk --release \
             --obfuscate --split-debug-info=build/app/outputs/symbols \
             --dart-define=BACKEND_URL=${{ secrets.BACKEND_URL }} \
             --dart-define=AUTH_KEY=${{ secrets.AUTH_KEY }}
@@ -40,4 +39,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: rtm-tv-release
-          path: rtm_tv_mobile/build/app/outputs/flutter-apk/*.apk
+          path: rtm_tv_mobile/build/app/outputs/flutter-apk/app-release.apk
