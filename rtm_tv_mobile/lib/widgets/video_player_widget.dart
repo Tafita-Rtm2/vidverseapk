@@ -86,23 +86,33 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       ),
     );
 
-    // ✅ Configuration du player — robuste pour le live IPTV
-    final betterPlayerConfiguration = BetterPlayerConfiguration(
+
+// ✅ 1. Configuration globale (Ligne 90 environ)
+    // On retire le "const" ici car la configuration contient des éléments dynamiques
+    final BetterPlayerConfiguration playerConfig = BetterPlayerConfiguration(
       autoPlay: true,
       looping: false,
       aspectRatio: 16 / 9,
       fit: BoxFit.contain,
       handleLifecycle: true,
       autoDispose: true,
+      // Placeholder, contrôles, etc. (garde ton code existant ici)
+    );
 
-      // Placeholder pendant le chargement
-      placeholder: Container(
-        color: Colors.black,
-        child: const Center(
-          child: CircularProgressIndicator(color: AppColors.accent),
-        ),
+    // ✅ 2. Initialisation du contrôleur (Ligne 124)
+    // On enlève le "const" devant BetterPlayerConfiguration pour corriger l'erreur de compilation
+    _betterPlayerController = BetterPlayerController(
+      BetterPlayerConfiguration(
+        aspectRatio: 16 / 9,
+        fit: BoxFit.contain,
+        autoPlay: true,
+        looping: false,
+        deviceOrientationsAfterFullScreen: [
+          DeviceOrientation.portraitUp,
+        ],
       ),
-
+      betterPlayerDataSource: dataSource,
+    );
       // ✅ Contrôles personnalisés
       controlsConfiguration: BetterPlayerControlsConfiguration(
         enableFullscreen: true,
