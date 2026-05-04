@@ -3,16 +3,30 @@ import 'package:http/http.dart' as http;
 import '../models/channel.dart';
 
 class ApiService {
-  // L'adresse de ton serveur
+  // 1. L'URL de ton backend sur Hugging Face
   static const String backendUrl = 'https://tafitaniaina-tvserveur.hf.space';
   
-  // CETTE CLÉ DOIT ÊTRE LA MÊME QUE DANS TON BACKEND (RTM_GK ou AUTH_KEY)
+  // 2. Ta clé de sécurité (identique à celle du backend)
   static const String authKey = 'rtm_secret_key_2024_ultra';
+
+  // Fonction pour décoder le Base64 envoyé par ton serveur
+  String _decodeResponse(String body) {
+    try {
+      // Si le texte ne commence pas par '{', c'est qu'il est encodé en Base64
+      if (!body.trim().startsWith('{')) {
+        return utf8.decode(base64.decode(body.trim()));
+      }
+      return body;
+    } catch (e) {
+      print("Erreur de décodage: $e");
+      return body;
+    }
+  }
 
   Future<List<Channel>> fetchChannels() async {
     try {
       final response = await http.get(
-        Uri.parse('$backendUrl/api/rtm/channels?limit=50000'),
+        Uri.parse('$backendUrl/api/rtm/channels?limit=50000&auth=$authKey'),
         headers: {
           'x-rtm-auth': authKey,
           'Accept': 'application/json',
@@ -20,9 +34,10 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        // Ton backend utilise un encodage Base64 (fonction enc)
-        // Mais pour les routes classiques, il semble envoyer du JSON direct
-        final Map<String, dynamic> data = json.decode(response.body);
+        // Décodage du Base64 avant de lire le JSON
+        final String decodedBody = _decodeResponse(response.body);
+        final Map<String, dynamic> data = json.decode(decodedBody);
+        
         final List<dynamic> channelsJson = data['channels'] ?? [];
         return channelsJson.map((json) => Channel.fromJson(json)).toList();
       } else {
@@ -36,11 +51,13 @@ class ApiService {
   Future<List<String>> fetchCountries() async {
     try {
       final response = await http.get(
-        Uri.parse('$backendUrl/api/rtm/countries'),
+        Uri.parse('$backendUrl/api/rtm/countries?auth=$authKey'),
         headers: {'x-rtm-auth': authKey},
       );
+      
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
+        final String decodedBody = _decodeResponse(response.body);
+        final Map<String, dynamic> data = json.decode(decodedBody);
         return List<String>.from(data['countries'] ?? []);
       }
       return [];
@@ -51,12 +68,10 @@ class ApiService {
 
   String getImageUrl(String? url) {
     if (url == null || url.isEmpty) return '';
-    // Pour les images, ton backend utilise le query param 'auth'
     return '$backendUrl/api/rtm/img?u=${Uri.encodeComponent(url)}&auth=$authKey';
   }
 
   String getStreamUrl(String id) {
-    // Pour le live, ton backend utilise le query param 'auth' ou l'ID direct
     return '$backendUrl/api/rtm/live?id=$id&auth=$authKey';
   }
 }
