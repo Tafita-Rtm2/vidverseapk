@@ -15,7 +15,7 @@ dependencies:
 
   # ✅ REMPLACÉ : better_player est remplacé par better_player_plus 
   # pour corriger l'erreur 'hashValues' et la compatibilité Flutter 3.x
-  better_player_plus: ^6.0.2
+  better_player_plus: ^1.2.1
 
   cached_network_image: ^3.3.0
   carousel_slider: ^5.0.0
