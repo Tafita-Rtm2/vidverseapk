@@ -4,76 +4,67 @@ import '../models/channel.dart';
 
 class ApiService {
   // 1. L'URL de ton backend sur Hugging Face
-  // Note : Assure-toi que l'URL ne finit pas par un slash ici
   static const String backendUrl = 'https://tafitaniaina-tvserveur.hf.space';
-  
-  // 2. Ta clé de sécurité (doit être IDENTIQUE à celle du serveur)
+
+  // 2. Ta clé de sécurité (identique à celle du backend)
   static const String authKey = 'rtm_secret_key_2024_ultra';
 
-  // ═══════════════════════════════════════════════════════════════
-  // ░░░ DÉCODEUR DE RÉPONSE (Base64 -> JSON) ░░░
-  // ═══════════════════════════════════════════════════════════════
+  // Headers communs pour toutes les requêtes API (JSON)
+  Map<String, String> get _apiHeaders => {
+        'x-rtm-auth': authKey,
+        'Accept': 'application/json',
+      };
+
+  // Headers spéciaux pour les requêtes de stream (force les URLs absolues)
+  // Le serveur détecte X-RTM-Client: flutter et génère des URLs absolues
+  // dans le M3U8 réécrit au lieu de chemins relatifs (/api/rtm/live?sid=...)
+  Map<String, String> get _streamHeaders => {
+        'x-rtm-auth': authKey,
+        'X-RTM-Client': 'flutter',
+        'X-Base-URL': backendUrl,
+        'Accept': '*/*',
+      };
+
+  // Fonction pour décoder le Base64 envoyé par ton serveur
   String _decodeResponse(String body) {
-    if (body.isEmpty) return body;
-    
     try {
-      final trimmedBody = body.trim();
-      
-      // Si le texte commence par '{', c'est déjà du JSON, on le renvoie tel quel
-      if (trimmedBody.startsWith('{') || trimmedBody.startsWith('[')) {
-        return trimmedBody;
+      if (!body.trim().startsWith('{')) {
+        return utf8.decode(base64.decode(body.trim()));
       }
-      
-      // Sinon, on décode le Base64 de manière sécurisée
-      return utf8.decode(base64Decode(trimmedBody));
+      return body;
     } catch (e) {
-      print("❌ Erreur de décodage API: $e");
-      // En cas d'erreur, on renvoie le corps original pour éviter le crash
+      print("Erreur de décodage: $e");
       return body;
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════
-  // ░░░ RÉCUPÉRATION DES CHAÎNES ░░░
-  // ═══════════════════════════════════════════════════════════════
   Future<List<Channel>> fetchChannels() async {
     try {
       final response = await http.get(
         Uri.parse('$backendUrl/api/rtm/channels?limit=50000&auth=$authKey'),
-        headers: {
-          'x-rtm-auth': authKey,
-          'Accept': 'application/json',
-        },
+        headers: _apiHeaders,
       );
 
       if (response.statusCode == 200) {
         final String decodedBody = _decodeResponse(response.body);
         final Map<String, dynamic> data = json.decode(decodedBody);
-        
         final List<dynamic> channelsJson = data['channels'] ?? [];
         return channelsJson.map((json) => Channel.fromJson(json)).toList();
       } else {
-        print('⚠️ Erreur serveur: ${response.statusCode}');
         throw Exception('Erreur serveur: ${response.statusCode}');
       }
     } catch (e) {
-      print('❌ Erreur de connexion fetchChannels: $e');
       throw Exception('Erreur de connexion: $e');
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════
-  // ░░░ RÉCUPÉRATION DES PAYS ░░░
-  // ═══════════════════════════════════════════════════════════════
   Future<List<String>> fetchCountries() async {
     try {
       final response = await http.get(
         Uri.parse('$backendUrl/api/rtm/countries?auth=$authKey'),
-        headers: {
-          'x-rtm-auth': authKey,
-        },
+        headers: _apiHeaders,
       );
-      
+
       if (response.statusCode == 200) {
         final String decodedBody = _decodeResponse(response.body);
         final Map<String, dynamic> data = json.decode(decodedBody);
@@ -81,24 +72,52 @@ class ApiService {
       }
       return [];
     } catch (e) {
-      print('❌ Erreur fetchCountries: $e');
       return [];
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════
-  // ░░░ GÉNÉRATION DES URLS (IMAGE & STREAM) ░░░
-  // ═══════════════════════════════════════════════════════════════
-  
-  // URL pour les logos via le proxy du serveur
   String getImageUrl(String? url) {
     if (url == null || url.isEmpty) return '';
     return '$backendUrl/api/rtm/img?u=${Uri.encodeComponent(url)}&auth=$authKey';
   }
 
-  // URL pour le flux vidéo (C'est ici que la magie opère pour l'APK)
+  // URL du stream — le serveur recevra les headers _streamHeaders
+  // via la méthode fetchStreamUrl() et retournera un M3U8 avec URLs absolues
   String getStreamUrl(String id) {
-    // On ajoute un faux paramètre .m3u8 pour aider les lecteurs Android (Ex: Better Player)
-    return '$backendUrl/api/rtm/live?id=$id&auth=$authKey&ext=.m3u8';
+    return '$backendUrl/api/rtm/live?id=$id&auth=$authKey';
   }
+
+  // NOUVELLE MÉTHODE : récupère le M3U8 avec URLs absolues pour Flutter
+  // À utiliser dans le video player au lieu de passer getStreamUrl() directement
+  Future<String> fetchStreamUrl(String id) async {
+    final uri = Uri.parse('$backendUrl/api/rtm/live?id=$id&auth=$authKey');
+    try {
+      final response = await http.get(uri, headers: _streamHeaders);
+
+      if (response.statusCode == 200) {
+        final contentType = response.headers['content-type'] ?? '';
+        final body = response.body;
+
+        // Si c'est un M3U8 → on le reçoit déjà réécrit avec URLs absolues
+        // grâce au header X-RTM-Client: flutter détecté côté serveur
+        if (contentType.contains('mpegurl') ||
+            contentType.contains('m3u') ||
+            body.trimLeft().startsWith('#EXTM3U')) {
+          // On retourne l'URL directe car le serveur va maintenant
+          // générer des URLs absolues quand il voit X-RTM-Client: flutter
+          return getStreamUrl(id);
+        }
+
+        return getStreamUrl(id);
+      } else {
+        throw Exception('Stream non disponible: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Erreur stream: $e');
+    }
+  }
+
+  // Headers à passer au video player natif Flutter (ex: video_player, better_player)
+  // pour que chaque requête de segment M3U8 inclue le header d'auth
+  Map<String, String> get videoPlayerHeaders => _streamHeaders;
 }
