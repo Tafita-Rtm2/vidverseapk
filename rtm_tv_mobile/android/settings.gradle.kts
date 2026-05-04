@@ -19,8 +19,9 @@ pluginManagement {
 
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
-    id("com.android.application") version "8.2.1" apply false
-    // Mise à jour de la version ici
+    // ✅ Passage en 8.6.0 pour supprimer ton warning AGP
+    id("com.android.application") version "8.6.0" apply false
+    // ✅ Passage en 2.1.0 pour supprimer ton warning Kotlin
     id("org.jetbrains.kotlin.android") version "2.1.0" apply false
 }
 
