@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/channel.dart';
 
-static const String backendUrl = 'https://tafitaniaina-tvserveur.hf.space';
+class ApiService {
+  static const String backendUrl = 'https://tafitaniaina-tvserveur.hf.space';
   static const String authKey = 'rtm_secret_key_2024_ultra';
 
   Future<List<Channel>> fetchChannels() async {
